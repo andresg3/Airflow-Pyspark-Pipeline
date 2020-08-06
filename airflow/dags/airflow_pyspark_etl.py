@@ -1,8 +1,10 @@
 from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
 from airflow.operators.dummy_operator import DummyOperator
+from airflow.operators.python_operator import PythonOperator
+from airflow.operators.bash_operator import BashOperator
 from airflow.contrib.sensors.file_sensor import FileSensor
 from airflow.operators.docker_operator import DockerOperator
+from operators.upload_files_to_s3 import Upload2S3
 from datetime import datetime, timedelta
 import os
 from pathlib import Path
@@ -29,13 +31,13 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
         task_id='waiting_file_task',
         fd_conn_id='fs_default',
         filepath='/home/andresg3/PycharmProjects/Airflow-Pyspark-Pipeline/data_files',
-        poke_interval=1
+        poke_interval=60
     )
 
-    t2 = BashOperator(
-        task_id='Start_of_Dag',
-        bash_command='echo FOUND FILES *************************************'
-    )
+    # t2 = BashOperator(
+    #     task_id='Start_of_Dag',
+    #     bash_command='echo FOUND FILES *************************************'
+    # )
     # t2 = DockerOperator(
     #     task_id='spark_submit',
     #     image='jupyter/pyspark-notebook',
@@ -49,6 +51,13 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
     #     command='spark-submit --master local[*] /home/jovyan/pyspark_test01.py'
     # )
 
+    upload_to_S3_task = Upload2S3(
+        task_id='upload_files_to_S3',
+        # python_callable=lambda **kwargs: print("Uploading file to S3")
+        filename='/home/andresg3/PycharmProjects/Airflow-Pyspark-Pipeline/data_files/file.csv',
+        bucket_name='books-s3-landing'
+    )
+
     end = DummyOperator(task_id='End')
 
-    begin >> waiting_file_task >> t2 >> end
+    begin >> waiting_file_task >> upload_to_S3_task >> end
