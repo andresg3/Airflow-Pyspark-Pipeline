@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 import os
 from pathlib import Path
 
-
 default_args = {
     'owner': 'airflow',
     'description': 'Pyspark ETL Pipeline',
@@ -54,7 +53,8 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
     upload_to_S3_task = Upload2S3(
         task_id='upload_files_to_S3',
         # python_callable=lambda **kwargs: print("Uploading file to S3")
-        filename='/home/andresg3/PycharmProjects/Airflow-Pyspark-Pipeline/data_files/file.csv',
+        s3_conn_id = 'my_S3_conn',
+        filepath='data_files',
         bucket_name='books-s3-landing'
     )
 
