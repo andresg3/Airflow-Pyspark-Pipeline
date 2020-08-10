@@ -60,4 +60,4 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
 
     end = DummyOperator(task_id='End')
 
-    begin >> waiting_file_task >> upload_to_S3_task >> end
+    begin >> upload_to_S3_task >> end
