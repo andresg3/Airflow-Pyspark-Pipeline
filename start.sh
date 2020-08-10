@@ -1,3 +1,5 @@
+docker-compose down
+docker-compose up -d
 kill -9 $(lsof -i:8080 -t) 2> /dev/null
 export AIRFLOW_HOME=$PWD/airflow
 echo $AIRFLOW_HOME
