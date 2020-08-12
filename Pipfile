@@ -10,6 +10,7 @@ apache-airflow = "==1.10.11"
 docker = "*"
 boto3 = "*"
 psycopg2 = "*"
+pyspark = "*"
 
 [requires]
 python_version = "3.8"

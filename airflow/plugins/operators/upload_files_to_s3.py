@@ -16,22 +16,31 @@ class Upload2S3(BaseOperator):
         self.filepath = filepath
         self.bucket_name = bucket_name
         self.hook = self.get_hook()
+        self.archive_filepath = 'data_files/archives'
+        self.suffix = str(round(time.time() * 1000))
 
     def get_hook(self):
         return airflow.hooks.S3_hook.S3Hook(self.s3_conn_id)
 
     @staticmethod
     def get_key(file, suffix):
+        # Generates a new filename for each file being uploaded to s3. example: author_1596807367990.csv
         base = (os.path.basename(file))
-        # this generates a "key" or filename to upload to s3. example: author_1596807367990.csv
-        key = os.path.splitext(base)[0] + '_' + suffix + os.path.splitext(base)[1]
-        return key
+        filename = os.path.splitext(base)[0]
+        file_type = os.path.splitext(base)[1]
+        return filename + '_' + suffix + file_type
+
+    def archive_file(self, file, key):
+        dest_filename = os.path.join(self.archive_filepath, key)
+        self.log.info(f'Moving {file} to {dest_filename}')
+        # os.rename(file, dest_filename)
 
     def upload_files_to_s3(self, all_files):
-        suffix = str(round(time.time() * 1000))
         for file in all_files:
-            self.hook.load_file(file, self.get_key(file, suffix), self.bucket_name)
+            key = self.get_key(file, self.suffix)
             self.log.info(f'Uploading {file} to S3')
+            # self.hook.load_file(file, key, self.bucket_name)
+            self.archive_file(file, key)
 
     def execute(self, context):
         all_files = glob.glob(f'{self.filepath}/*.csv')
