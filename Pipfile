@@ -7,10 +7,11 @@ verify_ssl = true
 
 [packages]
 apache-airflow = "==1.10.11"
-docker = "*"
-boto3 = "*"
-psycopg2 = "*"
-pyspark = "*"
+boto3 = "==1.14.40"
+docker = "==4.3.0"
+psycopg2 = "==2.8.5"
+pyspark = "==3.0.0"
+gunicorn = "==19.5.0"
 
 [requires]
 python_version = "3.8"

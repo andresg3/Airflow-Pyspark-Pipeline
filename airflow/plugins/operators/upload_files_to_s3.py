@@ -33,14 +33,13 @@ class Upload2S3(BaseOperator):
     def archive_file(self, file, key):
         dest_filename = os.path.join(self.archive_filepath, key)
         self.log.info(f'Moving {file} to {dest_filename}')
-        # os.rename(file, dest_filename)
 
     def upload_files_to_s3(self, all_files):
         for file in all_files:
             key = self.get_key(file, self.suffix)
             self.log.info(f'Uploading {file} to S3')
             # self.hook.load_file(file, key, self.bucket_name)
-            self.archive_file(file, key)
+            # self.archive_file(file, key)
 
     def execute(self, context):
         all_files = glob.glob(f'{self.filepath}/*.csv')
