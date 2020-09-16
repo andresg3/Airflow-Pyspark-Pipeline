@@ -32,7 +32,8 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
     #     filepath='/home/andresg3/PycharmProjects/Airflow-Pyspark-Pipeline/data_files',
     #     poke_interval=60
     # )
-    cmd = 'sh -c "pip install boto3 && spark-submit --master local[*] /home/jovyan/transform.py"'
+    cmd = 'sh -c "pip install boto3 && spark-submit --packages org.apache.hadoop:hadoop-aws:2.7.3\
+                                                    --master local[*] /home/jovyan/transform_s3.py"'
     process_data = DockerOperator(
         task_id='process_data',
         image='jupyter/pyspark-notebook:acb539921413',
@@ -46,21 +47,22 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
         command=cmd
     )
 
-    upload_to_S3_task = Upload2S3(
-        task_id='upload_to_s3',
-        # python_callable=lambda **kwargs: print("Uploading file to S3")
-        s3_conn_id='my_S3_conn',
-        filepath='data_files',
-        bucket_name='books-s3-landing'
-    )
-
-    move_data_in_s3 = MoveS3data(
-        task_id='copy_from_landing_to_working_zone',
-        s3_conn_id='my_S3_conn',
-        src_bucket='books-s3-landing',
-        dest_bucket='books-s3-working'
-    )
+    # upload_to_S3_task = Upload2S3(
+    #     task_id='upload_to_s3',
+    #     s3_conn_id='my_S3_conn',
+    #     filepath='data_files',
+    #     bucket_name='books-s3-landing'
+    # )
+    #
+    # move_data_in_s3 = MoveS3data(
+    #     task_id='copy_from_landing_to_working_zone',
+    #     s3_conn_id='my_S3_conn',
+    #     src_bucket='books-s3-landing',
+    #     dest_bucket='books-s3-working'
+    # )
 
     end = DummyOperator(task_id='end')
 
-    begin >> upload_to_S3_task >> move_data_in_s3 >> process_data >> end
+    # begin >> upload_to_S3_task >> move_data_in_s3 >> process_data >> end
+    begin >> process_data >> end
+    # begin >> move_data_in_s3 >> end

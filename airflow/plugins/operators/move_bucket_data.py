@@ -29,11 +29,13 @@ class MoveS3data(BaseOperator):
                               source_bucket_name=self.source_bucket,
                               dest_bucket_name=self.dest_bucket)
 
-    def clean_bucket(self, bucket_name):
-        self.log.info(f'Removing all files from {bucket_name} ')
+    def clean_bucket(self, bucket_name, keys):
+        self.log.info(f'Removing all files from bucket: {bucket_name} ')
+        self.hook.delete_objects(bucket_name, keys)
 
     def execute(self, context):
-        self.clean_bucket(self.dest_bucket)
-        for key in self.get_files_list():
+        keys = self.get_files_list()
+        self.clean_bucket(self.dest_bucket, keys)
+        for key in keys:
             self.copy_files(key)
-        self.clean_bucket(self.source_bucket)
+        # self.clean_bucket(self.source_bucket, keys)
