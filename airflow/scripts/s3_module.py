@@ -1,9 +1,10 @@
 import boto3
 import configparser
-import os
+from pathlib import Path
 
 config = configparser.ConfigParser()
-config.read_file(open(os.getcwd() + '/config.cfg'))
+# config.read_file(open(os.getcwd() + '/config.cfg'))
+config.read_file(open(f"{Path(__file__).parents[0]}/config.cfg"))
 
 myAccessKey = config['KEYS']['ACCESS_KEY']
 mySecretKey = config['KEYS']['SECRET_KEY']

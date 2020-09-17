@@ -4,7 +4,9 @@ from airflow.utils.decorators import apply_defaults
 import time
 import glob
 import os
-
+import sys
+sys.path.insert(0, 'airflow/scripts')
+from s3_module import S3Module
 
 class Upload2S3(BaseOperator):
     ui_color = '#ffcfdb'
@@ -37,10 +39,12 @@ class Upload2S3(BaseOperator):
     def upload_files_to_s3(self, all_files):
         for file in all_files:
             key = self.get_key(file, self.suffix)
-            self.log.info(f'Uploading {file} to S3')
-            # self.hook.load_file(file, key, self.bucket_name)
+            self.log.info(f'Uploading {file} to {self.bucket_name} bucket')
+            self.hook.load_file(file, key, self.bucket_name)
             # self.archive_file(file, key)
 
     def execute(self, context):
         all_files = glob.glob(f'{self.filepath}/*.csv')
+        bs3 = S3Module()
+        bs3.clean_bucket(bucket_name='books-s3-landing')
         self.upload_files_to_s3(all_files)

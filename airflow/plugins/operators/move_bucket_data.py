@@ -4,7 +4,6 @@ from airflow.utils.decorators import apply_defaults
 import boto3
 import pyspark
 
-
 class MoveS3data(BaseOperator):
     ui_color = '#fcc200'
 
@@ -38,4 +37,3 @@ class MoveS3data(BaseOperator):
         self.clean_bucket(self.dest_bucket, keys)
         for key in keys:
             self.copy_files(key)
-        # self.clean_bucket(self.source_bucket, keys)

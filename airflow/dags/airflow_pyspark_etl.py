@@ -34,25 +34,25 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
     # )
     cmd = 'sh -c "pip install boto3 && spark-submit --packages org.apache.hadoop:hadoop-aws:2.7.3\
                                                     --master local[*] /home/jovyan/transform_s3.py"'
-    process_data = DockerOperator(
-        task_id='process_data',
-        image='jupyter/pyspark-notebook:acb539921413',
-        # image='jupyter/all-spark-notebook',
-        api_version='auto',
-        auto_remove=False,
-        docker_url="unix://var/run/docker.sock",
-        host_tmp_dir='/tmp',
-        tmp_dir='/tmp',
-        volumes=[f'{local_src}:/home/jovyan'],
-        command=cmd
-    )
-
-    # upload_to_S3_task = Upload2S3(
-    #     task_id='upload_to_s3',
-    #     s3_conn_id='my_S3_conn',
-    #     filepath='data_files',
-    #     bucket_name='books-s3-landing'
+    # process_data = DockerOperator(
+    #     task_id='process_data',
+    #     image='jupyter/pyspark-notebook:acb539921413',
+    #     # image='jupyter/all-spark-notebook',
+    #     api_version='auto',
+    #     auto_remove=False,
+    #     docker_url="unix://var/run/docker.sock",
+    #     host_tmp_dir='/tmp',
+    #     tmp_dir='/tmp',
+    #     volumes=[f'{local_src}:/home/jovyan'],
+    #     command=cmd
     # )
+
+    upload_to_S3_task = Upload2S3(
+        task_id='upload_to_s3',
+        s3_conn_id='my_S3_conn',
+        filepath='data_files',
+        bucket_name='books-s3-landing'
+    )
     #
     # move_data_in_s3 = MoveS3data(
     #     task_id='copy_from_landing_to_working_zone',
@@ -64,5 +64,6 @@ with DAG('docker_dag', default_args=default_args, schedule_interval="@once", cat
     end = DummyOperator(task_id='end')
 
     # begin >> upload_to_S3_task >> move_data_in_s3 >> process_data >> end
-    begin >> process_data >> end
+    # begin >> process_data >> end
     # begin >> move_data_in_s3 >> end
+    begin >> upload_to_S3_task >> end
