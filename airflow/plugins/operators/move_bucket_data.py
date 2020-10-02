@@ -1,8 +1,6 @@
 import airflow.hooks.S3_hook
 from airflow.models.baseoperator import BaseOperator
 from airflow.utils.decorators import apply_defaults
-import boto3
-import pyspark
 
 class MoveS3data(BaseOperator):
     ui_color = '#fcc200'
