@@ -12,7 +12,6 @@ class AnalyticsOperator(BaseOperator):
         self.red_conn_id = red_conn_id
         self.sql_query = sql_query
 
-
     def execute(self, context):
         redshift_hook = PostgresHook(postgres_conn_id=self.red_conn_id)
         for query in self.sql_query:
