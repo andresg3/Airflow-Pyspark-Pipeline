@@ -3,7 +3,7 @@
 A simple data warehouse infrastructure with an ETL pipeline running inside docker with Apache Airflow for data orchestration, AWS Redshift for cloud data warehouse. The data files are dropped every morning on a local directory and moved to 'Landing Bucket' on AWS S3. "Transform" jobs are written in Pyspark. Used 'DockerOperator' from Airflow to spin up a Pyspark instance(jupyter/pyspark-notebook). Jobs are scheduled to run every morning.
 
 ### Architecture
-png here
+![alt text](https://github.com/andresg3/Airflow-Pyspark-Pipeline/blob/master/images/airflow_pyspark_pipeline%20(2).png)
 
 ### Setup
 - Clone this repo
