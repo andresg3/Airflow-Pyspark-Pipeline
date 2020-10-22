@@ -22,8 +22,14 @@ A simple data warehouse infrastructure with an ETL pipeline running inside docke
 - Another custom Operator then loads the Analytics Tables that can be queried to show Popular Books, authors, ratings... etc
 
 ### DAG view
-img here
 
+![alt text](https://github.com/andresg3/Airflow-Pyspark-Pipeline/blob/master/images/2020-10-22%2015.19.26%20localhost%20b015719d1d79.png?raw=true)
+---
+---
+![alt text](https://github.com/andresg3/Airflow-Pyspark-Pipeline/blob/master/images/2020-10-22%2015.18.18%20localhost%2037fe59a68abe.png?raw=true)
+
+### DAG Tree View
+![alt text](https://github.com/andresg3/Airflow-Pyspark-Pipeline/blob/master/images/2020-10-22%2015.21.55%20localhost%20be4c028900bb.png?raw=true)
 
 
 
