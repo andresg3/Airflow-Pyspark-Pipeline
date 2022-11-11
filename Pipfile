@@ -10,7 +10,7 @@ apache-airflow = "==1.10.11"
 boto3 = "==1.14.40"
 docker = "==4.3.0"
 psycopg2 = "==2.8.5"
-pyspark = "==3.0.0"
+pyspark = "==3.2.2"
 gunicorn = "==19.5.0"
 
 [requires]
